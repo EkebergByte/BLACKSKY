@@ -9,7 +9,7 @@ use crate::rpc::fetch_polygon_balance;
 async fn main() -> Result<(), BlackskyError> {
     dotenvy::dotenv().ok();
     let rpc_url = std::env::var("POLYGON_RPC_URL")
-        .unwrap_or_else(|_| "https://polygon-bor-rpc.publicnode.com".to_string());
+        .unwrap_or_else(|_| "https://polygon.drpc.org".to_string());
     let contract_address = "0xac0f66379a6d7801d7726d5a943356a172549adb";
     let wallet_address = "0x000000000000000000000000000000000000dEaD";
 
