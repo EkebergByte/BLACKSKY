@@ -1,3 +1,7 @@
+mod config;
+mod models;
+mod rpc;
+
 use crate::models::BlackskyError;
 use crate::rpc::fetch_polygon_balance;
 
