@@ -24,5 +24,4 @@ Desktop.ini
 *.sqlite
 *.sqlite3
 *.log
-*.csv
 *.parquet
