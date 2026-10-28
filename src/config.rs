@@ -68,9 +68,6 @@ pub struct TrackedEntity {
     pub chain: Chain,
     pub label: &'static str,
     pub category: EntityCategory,
-    pub snapshot_balance_geod: f64,
-    pub is_liquid_overhang: bool,
-    pub notes: &'static str,
 }
 
 pub const POLYGON_GEOD_CONTRACT: &str = "0xac0f66379a6d7801d7726d5a943356a172549adb";
@@ -91,15 +88,6 @@ pub const TRACKED_ENTITIES: &[TrackedEntity] = &[
         snapshot_balance_geod: 288_710_000.0,
         is_liquid_overhang: false,
         notes: "Locks Polygon GEOD minted 1:1 as SPL GEOD on Solana",
-    },
-    TrackedEntity {
-        address: "0x6762157b73941e36cEd0AEf54614DdE545d0F990",
-        chain: Chain::Polygon,
-        label: "Wormhole_NTT_Bridge_Transceiver_V3",
-        category: EntityCategory::BridgeCustodian,
-        snapshot_balance_geod: 0.0,
-        is_liquid_overhang: false,
-        notes: "V3 router contract for Polygon to Solana transfers capped at 10M per tx",
     },
     TrackedEntity {
         address: "0xca3E874Bc4e830796d822F529C29Df30302324b2",

@@ -49,21 +49,29 @@ async fn main() -> Result<(), BlackskyError> {
 
     records.sort_by(|a, b| b.balance_geod.partial_cmp(&a.balance_geod).unwrap());
 
-    println!("{:<8} | {:<20} | {:<38} | {:<42} | {:>18} | {:<8}", "CHAIN", "CATEGORY", "LABEL", "ADDRESS", "BALANCE (GEOD)", "OVERHANG");
-    println!("{}", "-".repeat(149));
+    println!("{:<8} | {:<20} | {:<38} | {:<42} | {:>18}", "CHAIN", "CATEGORY", "LABEL", "ADDRESS", "BALANCE (GEOD)");
+    println!("{}", "-".repeat(138));
 
     let mut frozen_reserve = 0.0;
     let mut burned_total = 0.0;
     let mut liquid_overhang = 0.0;
 
     for record in &records {
-        println!("{:<8} | {:<20} | {:<38} | {:<42} | {:>18.4} | {:<8}",
+        let entity = TRACKED_ENTITIES.iter()
+            .find(|e| e.address == record.address && e.chain.as_str() == record.chain)
+            .unwrap_or(&TrackedEntity {
+                address: record.address.as_str(),
+                chain: Chain::Polygon,
+                label: "Unknown",
+                category: EntityCategory::TokenContract,
+            });
+
+        println!("{:<8} | {:<20} | {:<38} | {:<42} | {:>18.4}",
             record.chain,
-            record.category,
-            record.label,
+            entity.category.as_str(),
+            entity.label,
             record.address,
-            record.balance_geod,
-            record.is_liquid_overhang);
+            record.balance_geod);
 
         match record.category.as_str() {
             "ProtocolReserve" | "TeamAllocationVault" | "PublicSaleVault" => frozen_reserve += record.balance_geod,

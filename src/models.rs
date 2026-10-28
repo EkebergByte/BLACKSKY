@@ -37,8 +37,5 @@ pub struct SnapshotRecord {
     pub chain: String,
     pub block_number: u64,
     pub address: String,
-    pub category: String,
-    pub label: String,
-    pub is_liquid_overhang: bool,
     pub balance_geod: f64,
 }

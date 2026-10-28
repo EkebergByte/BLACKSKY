@@ -4,7 +4,7 @@ use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::path::Path;
 use crate::models::{BlackskyError, SnapshotRecord};
 
-const CSV_HEADER: &str = "date,timestamp_utc,chain,block_number,address,category,label,is_liquid_overhang,balance_geod\n";
+const CSV_HEADER: &str = "date,timestamp_utc,chain,block_number,address,balance_geod\n";
 
 fn validate_record(record: &SnapshotRecord) -> Result<(), BlackskyError> {
     if !record.balance_geod.is_finite() || record.balance_geod < 0.0 {
@@ -39,24 +39,38 @@ pub fn append_snapshot_records(file_path: &str, records: &[SnapshotRecord]) -> R
     }
 
     let mut existing_keys = HashSet::new();
-    let file_has_content = if path.exists() {
-        let meta = path.metadata().map_err(|e| BlackskyError::StorageError(e.to_string()))?;
-        meta.len() > 0
-    } else {
-        false
-    };
-
-    if file_has_content {
+    let mut needs_reset = false;
+    
+    if path.exists() {
         let file = File::open(file_path).map_err(|e| BlackskyError::StorageError(e.to_string()))?;
-        let reader = BufReader::new(file);
-        for line in reader.lines().skip(1) {
-            let line = line.map_err(|e| BlackskyError::StorageError(e.to_string()))?;
-            let parts: Vec<&str> = line.split(',').collect();
-            if parts.len() >= 5 {
-                existing_keys.insert((parts[0].to_string(), normalize_address(parts[4], parts[2])));
+        let mut reader = BufReader::new(file);
+        let mut first_line = String::new();
+        reader.read_line(&mut first_line).map_err(|e| BlackskyError::StorageError(e.to_string()))?;
+        
+        needs_reset = first_line.trim() != CSV_HEADER.trim();
+        
+        if !needs_reset {
+            for line in reader.lines() {
+                let line = line.map_err(|e| BlackskyError::StorageError(e.to_string()))?;
+                let parts: Vec<&str> = line.split(',').collect();
+                if parts.len() == 6 {
+                    existing_keys.insert((
+                        parts[0].to_string(),
+                        parts[2].to_string(),
+                        normalize_address(parts[4], parts[2]),
+                    ));
+                }
             }
         }
     }
+
+    let file = OpenOptions::new()
+        .write(true)
+        .truncate(needs_reset)
+        .create(true)
+        .append(!needs_reset)
+        .open(file_path)
+        .map_err(|e| BlackskyError::StorageError(e.to_string()))?;
 
     let file = OpenOptions::new()
         .create(true)
