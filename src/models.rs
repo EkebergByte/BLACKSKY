@@ -1,9 +1,5 @@
 #[allow(dead_code)]
 use std::fmt;
-use std::collections::HashSet;
-use std::fs::File;
-use std::io::{BufRead, BufReader, BufWriter, Write};
-use std::path::Path;
 
 #[derive(Debug)]
 pub enum BlackskyError {
@@ -12,6 +8,12 @@ pub enum BlackskyError {
     RpcResponseError(String),
     StorageError(String),
     ValidationError(String),
+}
+
+impl From<std::io::Error> for BlackskyError {
+    fn from(err: std::io::Error) -> Self {
+        BlackskyError::StorageError(err.to_string())
+    }
 }
 
 impl fmt::Display for BlackskyError {
