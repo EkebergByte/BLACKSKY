@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Chain {
     Polygon,
@@ -5,6 +6,17 @@ pub enum Chain {
     IoTeX,
 }
 
+impl Chain {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Chain::Polygon => "Polygon",
+            Chain::Solana => "Solana",
+            Chain::IoTeX => "IoTeX",
+        }
+    }
+}
+
+#[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EntityCategory {
     TokenContract,
@@ -24,6 +36,30 @@ pub enum EntityCategory {
     BuybackExecutor,
     StakingContract,
     BurnAddress,
+}
+
+impl EntityCategory {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            EntityCategory::TokenContract => "TokenContract",
+            EntityCategory::ProtocolReserve => "ProtocolReserve",
+            EntityCategory::MiningDistribution => "MiningDistribution",
+            EntityCategory::VCAllocationVault => "VCAllocationVault",
+            EntityCategory::TeamAllocationVault => "TeamAllocationVault",
+            EntityCategory::EcosystemVault => "EcosystemVault",
+            EntityCategory::VendorMarketingVault => "VendorMarketingVault",
+            EntityCategory::PublicSaleVault => "PublicSaleVault",
+            EntityCategory::VCSubWallet => "VCSubWallet",
+            EntityCategory::WhaleSmartMoney => "WhaleSmartMoney",
+            EntityCategory::MinerWhale => "MinerWhale",
+            EntityCategory::CEXWallet => "CEXWallet",
+            EntityCategory::DEXPool => "DEXPool",
+            EntityCategory::BridgeCustodian => "BridgeCustodian",
+            EntityCategory::BuybackExecutor => "BuybackExecutor",
+            EntityCategory::StakingContract => "StakingContract",
+            EntityCategory::BurnAddress => "BurnAddress",
+        }
+    }
 }
 
 #[derive(Debug, Clone)]

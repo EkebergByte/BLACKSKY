@@ -6,7 +6,7 @@ pub async fn fetch_polygon_balances_batch(
     rpc_url: &str,
     contract_address: &str,
     wallet_addresses: &[&str],
-) -> Result<Vec<(String, f64)>, BlackskyError> {
+) -> Result<(u64, Vec<(String, f64)>), BlackskyError> {
     let client = Client::builder()
         .user_agent("blacksky/0.1.0")
         .timeout(std::time::Duration::from_secs(15))
@@ -87,6 +87,9 @@ pub async fn fetch_polygon_balances_batch(
         return Err(BlackskyError::HexDecodeError("Invalid response length".to_string()));
     }
 
+    let block_number = u64::from_str_radix(&result_hex[48..64], 16)
+        .map_err(|e| BlackskyError::HexDecodeError(e.to_string()))?;
+
     let mut results = Vec::new();
     for i in 0..n {
         let start = 192 + 64 * n + 128 * i + 64;
@@ -96,5 +99,5 @@ pub async fn fetch_polygon_balances_batch(
         results.push((wallet_addresses[i].to_string(), balance_u128 as f64 / 1e18));
     }
 
-    Ok(results)
+    Ok((block_number, results))
 }
