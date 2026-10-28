@@ -3,7 +3,7 @@ mod models;
 mod rpc;
 
 use crate::models::BlackskyError;
-use crate::rpc::{fetch_polygon_balance, fetch_polygon_balances_batch};
+use crate::rpc::fetch_polygon_balances_batch;
 use crate::config::{TRACKED_ENTITIES, Chain};
 
 #[tokio::main]
